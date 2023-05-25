@@ -53,4 +53,4 @@ outs = pad_sequences(outs)
 new_df = pd.DataFrame(outs)
 
 # Save the new DataFrame to a TSV file
-new_df.to_csv('Valid_2.tsv', sep='\t', index=False)
+new_df.to_csv('validated_token.tsv', sep='\t', index=False)
