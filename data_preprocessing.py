@@ -29,7 +29,6 @@ def RMChars(y):  # Remove the special characters
     ]
     return ''.join(ch for ch in y if ch not in chars)
 
-
 outs = np.array([RMChars(x) for x in outs]).astype(str)
 
 outs
@@ -48,7 +47,7 @@ print(outs)
 
 # Pad sequences, having all same shape
 outs = pad_sequences(outs)
-print(outs)
+#print(outs)
 
 # Create a new DataFrame with the processed data
 new_df = pd.DataFrame(outs)
