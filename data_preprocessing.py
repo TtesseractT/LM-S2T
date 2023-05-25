@@ -10,23 +10,25 @@ Original file is located at
 import pandas as pd
 import numpy as np
 
-df = pd.read_csv('sample.tsv', sep="\t")
+df = pd.read_csv('validated.tsv', sep="\t")
 
 # read the data frame
 df.head()
 
-inps = df["path"] #X
-outs = df["sentence"] #Y
+inps = df["path"]  # X
+outs = df["sentence"]  # Y
 
 """# ***Output Preprocessing***"""
 
-def RMChars(y): # Remove the special charachters
+
+def RMChars(y):  # Remove the special characters
     chars = [
-    '!', '#', '$', '%', '&', '(', ')', '*', '+', ',', '-', '.', '/', ':',
-    ';', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_', '`', '{', '|', '}',
-    '~'
-]
+        '!', '#', '$', '%', '&', '(', ')', '*', '+', ',', '-', '.', '/',
+        ':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_', '`',
+        '{', '|', '}', '~'
+    ]
     return ''.join(ch for ch in y if ch not in chars)
+
 
 outs = np.array([RMChars(x) for x in outs]).astype(str)
 
@@ -44,7 +46,12 @@ outs = tokenizer.texts_to_sequences(outs)
 
 print(outs)
 
-#Pad sequences, having all same shape
+# Pad sequences, having all same shape
 outs = pad_sequences(outs)
 print(outs)
 
+# Create a new DataFrame with the processed data
+new_df = pd.DataFrame(outs)
+
+# Save the new DataFrame to a TSV file
+new_df.to_csv('Valid_2.tsv', sep='\t', index=False)
