@@ -4,7 +4,7 @@ import math
 from tqdm import tqdm
 
 # Specify the source directory containing the WAV files
-source_directory = '/Users/sabianhibbs/Desktop/Speech-Model-Training/clips'
+source_directory = 'path_to_dataset'
 
 # Create 10 target directories
 target_directories = [os.path.join(source_directory, f'folder_{i+1}') for i in range(10)]
