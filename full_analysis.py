@@ -1,3 +1,6 @@
+# Description: This script performs a full analysis 
+# of the audio dataset and generates a TSV file with the results.
+
 import os
 import wave
 import re
