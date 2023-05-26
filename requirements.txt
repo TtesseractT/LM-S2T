@@ -1,0 +1,12 @@
+nltk
+gensim
+pyaudio
+torch
+plotly
+networkx
+lxml
+beautifulsoup4
+Flask
+Django
+pytest
+pyyaml
