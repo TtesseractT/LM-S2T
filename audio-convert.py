@@ -2,7 +2,7 @@ import os
 import subprocess
 import sys
 from tqdm import tqdm
-from multiprocessing import Pool
+from multiprocessing import Pool, cpu_count
 
 def get_mp3_files(input_folder):
     mp3_files = []
@@ -21,20 +21,17 @@ def convert_file(input_path):
     subprocess.run(command, shell=True, check=True)
     os.remove(input_path)
 
-def convert_to_wav(input_folder, num_processes):
+def convert_to_wav(input_folder):
     mp3_files = get_mp3_files(input_folder)
+    num_processes = cpu_count()  # Number of available processors
     
     with Pool(num_processes) as p:
         list(tqdm(p.imap(convert_file, mp3_files), total=len(mp3_files), desc="Converting MP3 to WAV", unit="file"))
 
 if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        print("Usage: python convert_mp3_to_wav.py <input_folder> [num_processes]")
-        sys.exit(1)
-
-    input_folder = sys.argv[1]
-    num_processes = int(sys.argv[2]) if len(sys.argv) > 2 else None
-    convert_to_wav(input_folder, num_processes)
+    input_folder = "path/to/input/folder"  # Set the variable to the desired location
+    
+    convert_to_wav(input_folder)
     
     with open('validated.tsv', 'r') as input_file, open('output_file.tsv', 'w') as output_file:
         for line in input_file:
