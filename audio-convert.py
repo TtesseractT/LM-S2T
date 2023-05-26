@@ -35,3 +35,8 @@ if __name__ == '__main__':
     input_folder = sys.argv[1]
     num_processes = int(sys.argv[2]) if len(sys.argv) > 2 else None
     convert_to_wav(input_folder, num_processes)
+    
+    with open('validated.tsv', 'r') as input_file, open('output_file.tsv', 'w') as output_file:
+        for line in input_file:
+            new_line = line.replace('.mp3', '.wav')
+            output_file.write(new_line)

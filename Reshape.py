@@ -1,3 +1,6 @@
+# This script reshapes the TSV file and the 
+# audio files to match the format of the LibriSpeech dataset.
+
 import os
 import pandas as pd
 from pydub import AudioSegment
@@ -14,7 +17,7 @@ new_df = pd.DataFrame(columns=df.columns)
 audio_dir = 'clips'
 
 # New audio files directory
-new_audio_dir = 're'
+new_audio_dir = 'Audio-Clips'
 
 # Create new_audio_dir if it doesn't exist
 if not os.path.exists(new_audio_dir):

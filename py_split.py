@@ -1,3 +1,5 @@
+# This script splits a directory of WAV files into 10 subdirectories.
+
 import os
 import shutil
 import math
