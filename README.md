@@ -35,7 +35,7 @@ git clone
 2. Navigate to the project directory:
 
 ```bash
-cd 
+cd LM-S2T
 ```
 
 3. Install the required packages:
