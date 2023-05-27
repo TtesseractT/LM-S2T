@@ -9,8 +9,9 @@ Original file is located at
 
 import pandas as pd
 import numpy as np
+from tqdm import tqdm
 
-df = pd.read_csv('sample.tsv', sep="\t")
+df = pd.read_csv('validated.tsv', sep="\t")
 
 # read the data frame
 df.head()
@@ -28,7 +29,8 @@ def RMChars(y): # Remove the special charachters
 ]
     return ''.join(ch for ch in y if ch not in chars)
 
-outs = np.array([RMChars(x) for x in outs]).astype(str)
+# add tqdm progress bar
+outs = np.array([RMChars(x) for x in tqdm(outs, desc='Removing special characters')]).astype(str)
 
 outs
 
@@ -42,23 +44,25 @@ tokenizer.fit_on_texts(outs)
 # Convert the sentences to sequences of integers using the tokenizer.
 outs = tokenizer.texts_to_sequences(outs)
 
-print(outs)
+#print(outs)
 
 #Pad sequences, having all same shape
 outs = pad_sequences(outs)
-print(outs)
+#print(outs)
 
 """# ***Preprocess Input***"""
 
 import librosa as lr
 def LoadAudio(x):
-    x, sr = lr.load(f"Audiofortest/{x}")
-    x = lr.features.mfcc(x, sr, n_mfcc=13)
+    x, sr = lr.load(f"clips/{x}")
+    x = lr.feature.mfcc(y=x, sr=sr, n_mfcc=13)
     try :
         x = np.mean(x)
         return x
-    except ERROR:
+    except ERROR as e:
         print(e)
 
-X = np.array([LoadAudio(x) for x in inps])
+# add tqdm progress bar
+X = np.array([LoadAudio(x) for x in tqdm(inps, desc='Loading audio files')])
 
+print(X)
