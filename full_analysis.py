@@ -1,3 +1,6 @@
+# Description: This script performs a full analysis 
+# of the audio dataset and generates a TSV file with the results.
+
 import os
 import wave
 import re
@@ -7,8 +10,6 @@ import csv
 from transformers import pipeline
 import statistics
 import math
-import soundfile as sf
-from pydub import AudioSegment
 
 # Function to get the duration of a WAV file in seconds
 def get_wav_duration(file_path):
@@ -44,22 +45,8 @@ def get_top_n_words(word_counts, n=5):
     most_common_words = word_counts.most_common(n)
     return [word for word, _ in most_common_words]
 
-# Function to get the file type (extension) of an audio file
-def get_file_type(file_path):
-    return os.path.splitext(file_path)[1]
-
-# Function to get the sample rate, bit depth, bit rate, number of channels, and number of audio samples of an audio file
-def get_audio_properties(file_path):
-    audio = AudioSegment.from_file(file_path)
-    sample_rate = audio.frame_rate
-    bit_depth = audio.sample_width * 8
-    bit_rate = audio.frame_rate * audio.sample_width * audio.channels
-    num_channels = audio.channels
-    num_samples = len(audio.get_array_of_samples())
-    return sample_rate, bit_depth, bit_rate, num_channels, num_samples
-
 # Path to your audio dataset folder
-dataset_folder = 'clips'
+dataset_folder = 'path_to_audio_files'
 
 # Path to the validated.tsv file
 validated_file_path = 'validated.tsv'
@@ -91,7 +78,6 @@ if not os.path.exists(tsv_file_path):
 
     # Open the TSV file in write mode to create it
     with open(tsv_file_path, 'w', newline='') as tsv_file:
-        # Create a CSV writer
         writer = csv.writer(tsv_file, delimiter='\t')
 
         # Write the header row
@@ -99,8 +85,7 @@ if not os.path.exists(tsv_file_path):
                          'Avg_Word_Length', 'Min_Word_Length', 'Max_Word_Length', 'Avg_Sentence_Length',
                          'Min_Sentence_Length', 'Max_Sentence_Length', 'Unique_Words', 'Vocabulary_Size',
                          'Word_Entropy', 'Sentence_Entropy', 'Avg_Word_Frequency', 'Min_Word_Frequency',
-                         'Max_Word_Frequency', 'Top_5_Words', 'File_Type', 'Sample_Rate', 'Bit_Depth',
-                         'Bit_Rate', 'Num_Channels', 'Num_Samples'])
+                         'Max_Word_Frequency', 'Top_5_Words'])
 
         # Iterate over the audio files
         for file_name, sentence in audio_data.items():
@@ -120,8 +105,6 @@ if not os.path.exists(tsv_file_path):
             min_word_frequency = min(word_counts.values())
             max_word_frequency = max(word_counts.values())
             top_5_words = get_top_n_words(word_counts, n=5)
-            file_type = get_file_type(file_path)
-            sample_rate, bit_depth, bit_rate, num_channels, num_samples = get_audio_properties(file_path)
 
             avg_sentence_length = num_words / num_sentences if num_sentences != 0 else 0
 
@@ -132,8 +115,7 @@ if not os.path.exists(tsv_file_path):
                 min([len(sentence) for sentence in re.split(r'[.!?]+', sentence.strip()) if sentence.strip()]),
                 max([len(sentence) for sentence in re.split(r'[.!?]+', sentence.strip()) if sentence.strip()]),
                 unique_words, vocabulary_size, word_entropy, sentence_entropy, avg_word_frequency,
-                min_word_frequency, max_word_frequency, ', '.join(top_5_words),
-                file_type, sample_rate, bit_depth, bit_rate, num_channels, num_samples
+                min_word_frequency, max_word_frequency, ', '.join(top_5_words)
             ])
 
             # Update the progress bar
