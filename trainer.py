@@ -50,7 +50,7 @@ audio_list = []
 
 from tqdm import tqdm
 for x in tqdm(inps):
-  x, sr = lr.load(f"clips/{x}".replace('mp3', 'wav'), sr=128)
+  x, sr = lr.load(f"clips/{x}".replace('mp3', 'wav'), sr=21000)
   audio_list.append(x)
 
 X = np.array(pad_sequences(audio_list))
@@ -61,8 +61,10 @@ print(X[0].shape)
 
 X = np.expand_dims(X, -1)
 
-# Save X as a .txt file
-#np.savetxt("X.txt", X)
+# Save X and y
+np.save("X.npy", X)
+np.save("y.npy", y)
+
 
 import tensorflow as tf
 from tensorflow import keras
