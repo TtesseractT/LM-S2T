@@ -1,5 +1,5 @@
 '''
-Model Trainer from HF Fine tune Whisper small Model
+Model Trainer from HF Fine tune Whisper base Model
 
 Author: Sabian Hibbs
 University of Derby
@@ -54,27 +54,27 @@ print(common_voice)
 
 '''
 # -----------------------------------
-# Feature Extraction Process - small
+# Feature Extraction Process - base
 # -----------------------------------
 '''
 
-feature_extractor = WhisperFeatureExtractor.from_pretrained("openai/whisper-small")
+feature_extractor = WhisperFeatureExtractor.from_pretrained("openai/whisper-base")
 
 '''
 # -----------------------------------
-# Load Whisper Tokenizer - small
+# Load Whisper Tokenizer - base
 # -----------------------------------
 '''
 
-tokenizer = WhisperTokenizer.from_pretrained("openai/whisper-small", language="en", task="transcribe")
+tokenizer = WhisperTokenizer.from_pretrained("openai/whisper-base", language="en", task="transcribe")
 
 '''
 # -----------------------------------
-# Combine WhisperProcessor - small
+# Combine WhisperProcessor - base
 # -----------------------------------
 '''
 
-processor = WhisperProcessor.from_pretrained("openai/whisper-small", language="en", task="transcribe")
+processor = WhisperProcessor.from_pretrained("openai/whisper-base", language="en", task="transcribe")
 
 '''
 # -----------------------------------
@@ -165,7 +165,7 @@ def compute_metrics(pred):
 # -----------------------------------
 '''
 
-model = WhisperForConditionalGeneration.from_pretrained("openai/whisper-small")
+model = WhisperForConditionalGeneration.from_pretrained("openai/whisper-base")
 model.config.forced_decoder_ids = None
 model.config.suppress_tokens = []
 
@@ -176,7 +176,7 @@ model.config.suppress_tokens = []
 '''
 
 training_args = Seq2SeqTrainingArguments(
-    output_dir="./LM-S2T-SMALL-2",  # change to a repo name of your choice
+    output_dir="./LM-S2T-BASE-2",  # change to a repo name of your choice
     per_device_train_batch_size=16,
     gradient_accumulation_steps=1,  # increase by 2x for every 2x decrease in batch size
     learning_rate=1e-5,
@@ -215,7 +215,7 @@ processor.save_pretrained(training_args.output_dir)
 
 ''' 
 ----------------------------------------------
-##### Model Training Whisper SMALL Model #####
+##### Model Training Whisper Base Model #####
 ----------------------------------------------
 '''
 
@@ -228,8 +228,8 @@ kwargs = {
     "dataset": "Common Voice 13.0",
     "dataset_args": "config: en, split: test",
     "language": "en",
-    "model_name": "LM-S2T-SMALL-2 - Tesseract3D",  
-    "finetuned_from": "openai/whisper-small",
+    "model_name": "LM-S2T-BASE-2 - Tesseract3D",  
+    "finetuned_from": "openai/whisper-base",
     "tasks": "automatic-speech-recognition",
     "tags": "hf-asr-leaderboard",
 }
