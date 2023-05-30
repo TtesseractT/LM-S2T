@@ -11,18 +11,22 @@ Licence MIT
 # Loading checkpoints from hugging face
 from huggingface_hub import notebook_login
 from datasets import load_dataset, DatasetDict
-from transformers import WhisperFeatureExtractor
-from transformers import WhisperTokenizer
-from transformers import WhisperProcessor
-from transformers import WhisperForConditionalGeneration
-from transformers import Seq2SeqTrainingArguments
-from transformers import Seq2SeqTrainer
+from transformers import (
+    WhisperFeatureExtractor,
+    WhisperTokenizer,
+    WhisperProcessor,
+    WhisperForConditionalGeneration,
+    Seq2SeqTrainingArguments,
+    Seq2SeqTrainer
+)
 from datasets import Audio
 from dataclasses import dataclass
-from typing import Any, Dict, List, Union
-
-import torch
-import evaluate
+from typing import (
+    Any, 
+    Dict, 
+    List, 
+    Union)
+import torch, evaluate
 
 # Huggingface pylance token
 # Make sure you run cmd first and use

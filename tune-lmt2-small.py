@@ -11,18 +11,22 @@ Licence MIT
 # Loading checkpoints from hugging face
 from huggingface_hub import notebook_login
 from datasets import load_dataset, DatasetDict
-from transformers import WhisperFeatureExtractor
-from transformers import WhisperTokenizer
-from transformers import WhisperProcessor
-from transformers import WhisperForConditionalGeneration
-from transformers import Seq2SeqTrainingArguments
-from transformers import Seq2SeqTrainer
+from transformers import (
+    WhisperFeatureExtractor,
+    WhisperTokenizer,
+    WhisperProcessor,
+    WhisperForConditionalGeneration,
+    Seq2SeqTrainingArguments,
+    Seq2SeqTrainer
+)
 from datasets import Audio
 from dataclasses import dataclass
-from typing import Any, Dict, List, Union
-
-import torch
-import evaluate
+from typing import (
+    Any, 
+    Dict, 
+    List, 
+    Union)
+import torch, evaluate
 
 # Huggingface pylance token
 # Make sure you run cmd first and use
@@ -39,34 +43,44 @@ notebook_login()
 common_voice = DatasetDict()
 common_voice["train"] = load_dataset("mozilla-foundation/common_voice_13_0", "en", split="train+validation")
 common_voice["test"] = load_dataset("mozilla-foundation/common_voice_13_0", "en", split="test")
+
 # Print for debug
 print(common_voice)
 
 common_voice = common_voice.remove_columns(["accent", "age", "client_id", "down_votes", "gender", "locale", "path", "segment", "up_votes"])
+
 # Print for debug
 print(common_voice)
 
-# --------------------------
+'''
+# -----------------------------------
 # Feature Extraction Process - small
-# --------------------------
+# -----------------------------------
+'''
 
 feature_extractor = WhisperFeatureExtractor.from_pretrained("openai/whisper-small")
 
-# --------------------------
+'''
+# -----------------------------------
 # Load Whisper Tokenizer - small
-# --------------------------
+# -----------------------------------
+'''
 
 tokenizer = WhisperTokenizer.from_pretrained("openai/whisper-small", language="en", task="transcribe")
 
-# --------------------------
+'''
+# -----------------------------------
 # Combine WhisperProcessor - small
-# --------------------------
+# -----------------------------------
+'''
 
 processor = WhisperProcessor.from_pretrained("openai/whisper-small", language="en", task="transcribe")
 
-# --------------------------
+'''
+# -----------------------------------
 # Prepare Data
-# --------------------------
+# -----------------------------------
+'''
 
 print(common_voice["train"][0])
 common_voice = common_voice.cast_column("audio", Audio(sampling_rate=16000))
@@ -87,10 +101,11 @@ def prepare_dataset(batch):
 
 common_voice = common_voice.map(prepare_dataset, remove_columns=common_voice.column_names["train"], num_proc=2)
 
-
-# --------------------------
+'''
+# -----------------------------------
 # Define Data Collector
-# --------------------------
+# -----------------------------------
+'''
 
 @dataclass
 class DataCollatorSpeechSeq2SeqWithPadding:
@@ -121,9 +136,11 @@ class DataCollatorSpeechSeq2SeqWithPadding:
     
 data_collator = DataCollatorSpeechSeq2SeqWithPadding(processor=processor)
 
-# --------------------------
+'''
+# -----------------------------------
 # Evaluation Metrics
-# --------------------------
+# -----------------------------------
+'''
 
 metric = evaluate.load("wer")
 
@@ -142,17 +159,21 @@ def compute_metrics(pred):
 
     return {"wer": wer}
 
-# --------------------------
+'''
+# -----------------------------------
 # Load Pretrained Checkpoints
-# --------------------------
+# -----------------------------------
+'''
 
 model = WhisperForConditionalGeneration.from_pretrained("openai/whisper-small")
 model.config.forced_decoder_ids = None
 model.config.suppress_tokens = []
 
-# --------------------------
+'''
+# -----------------------------------
 # Define the Training Config
-# --------------------------
+# -----------------------------------
+'''
 
 training_args = Seq2SeqTrainingArguments(
     output_dir="./LM-S2T-SMALL-2",  # change to a repo name of your choice
@@ -187,7 +208,10 @@ trainer = Seq2SeqTrainer(
     tokenizer=processor.feature_extractor,
 )
 
+# Print for debug
+print("Saving training arguments and model configuration...")
 processor.save_pretrained(training_args.output_dir)
+
 
 ''' 
 ----------------------------------------------
@@ -195,8 +219,10 @@ processor.save_pretrained(training_args.output_dir)
 ----------------------------------------------
 '''
 
+print("Training Iniciated...")
 trainer.train()
 
+# push model checkpoint to the hub
 kwargs = {
     "dataset_tags": "mozilla-foundation/common_voice_13_0",
     "dataset": "Common Voice 13.0",
@@ -208,6 +234,7 @@ kwargs = {
     "tags": "hf-asr-leaderboard",
 }
 
+# push model checkpoint to the hub
 trainer.push_to_hub(**kwargs)
 
 print("TRAINING COMPLETE!")
