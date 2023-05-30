@@ -34,8 +34,8 @@ token="hugging-face-token-here"
 notebook_login()
 
 common_voice = DatasetDict()
-common_voice["train"] = load_dataset("mozilla-foundation/common_voice_11_0", "LM-S2T-TINY-2", split="train+validation")
-common_voice["test"] = load_dataset("mozilla-foundation/common_voice_11_0", "LM-S2T-TINY-2", split="test")
+common_voice["train"] = load_dataset("mozilla-foundation/common_voice_11_0", "en", split="train+validation")
+common_voice["test"] = load_dataset("mozilla-foundation/common_voice_11_0", "en", split="test")
 # Print for debug
 print(common_voice)
 
@@ -53,13 +53,13 @@ feature_extractor = WhisperFeatureExtractor.from_pretrained("openai/whisper-tiny
 # Load Whisper Tokenizer - tiny
 # --------------------------
 
-tokenizer = WhisperTokenizer.from_pretrained("openai/whisper-tiny", language="English", task="transcribe")
+tokenizer = WhisperTokenizer.from_pretrained("openai/whisper-tiny", language="en", task="transcribe")
 
 # --------------------------
 # Combine WhisperProcessor - tiny
 # --------------------------
 
-processor = WhisperProcessor.from_pretrained("openai/whisper-tiny", language="English", task="transcribe")
+processor = WhisperProcessor.from_pretrained("openai/whisper-tiny", language="en", task="transcribe")
 
 # --------------------------
 # Prepare Data
