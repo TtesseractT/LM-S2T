@@ -51,8 +51,8 @@ df = pd.read_csv('/content/test/cv-corpus-12.0-delta-2022-12-07/en/validated.tsv
 # read the data frame
 df.head()
 
-inps = df["path"][:200] #X
-outs = df["sentence"][:200] #Y
+inps = df["path"] #X
+outs = df["sentence"] #Y
 
 X = np.array([LoadAudio("/content/test/cv-corpus-12.0-delta-2022-12-07/en/clips/"+x) for x in tqdm(inps, desc='Loading audio files')])
 
@@ -74,7 +74,7 @@ def Brown_noise(x):
 
 Y = []
 
-for ip in inps:
+for ip in outs:
 
   y = []
   for i in ip:
