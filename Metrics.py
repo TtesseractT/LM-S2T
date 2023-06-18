@@ -7,26 +7,18 @@ Original file is located at
     https://colab.research.google.com/drive/1-Jgj-zSWeNf5cdZ9uGULWE0QHtbppNwu
 """
 
-!pip install transformers
 
-from google.colab import drive
-drive.mount('/content/drive')
-
-!mkdir "test"
-!tar -xzvf /content/drive/MyDrive/myProjects/cv-corpus-12.0-delta-2022-12-07-en.tar.gz -C "test"
-
-from transformers import pipeline, WhisperFeatureExtractor, WhisperTokenizer, WhisperProcessor
+from transformers import pipeline
 import torch
-path = "Tesseract3D/LMT2-Tuned-S"
+path = "Validate"
 
 # transfer model
 
 pipe = pipeline(model=path, device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
 
 
-FE = WhisperFeatureExtractor.from_pretrained(path)
-tokenizer = WhisperTokenizer.from_pretrained(path)
-model = WhisperProcessor.from_pretrained(path)
+FE = pipe.feature_extractor()
+tokenizer = pipe.tokenizer()
 def transcribe(audio):
     #text = pipe(audio)["text"]
     #return text
