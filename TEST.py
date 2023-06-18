@@ -16,7 +16,7 @@ model_path = args.model_path
 pipe = pipeline("automatic-speech-recognition", model=model_path, device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
 
 
-tokenizer = pipe.tokenizer()
+tokenizer = pipe.tokenizer
 def transcribe(audio):
     out = pipe(audio)
     return out["text"]
