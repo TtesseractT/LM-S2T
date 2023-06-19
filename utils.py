@@ -59,7 +59,7 @@ def calculate_metrics(true_words, predicted_words):
     return wer, accuracy
 
 
-def main(folder_path, pipe, tokenizer, segment_duration=29, return_text=True)
+def main(folder_path, pipe, tokenizer, segment_duration=29, return_text=True):
     TS = []
     OUTS = []
     files = os.listdir(folder_path)
