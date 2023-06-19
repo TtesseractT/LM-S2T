@@ -3,7 +3,7 @@ import torch
 import librosa as lr
 import colorednoise as cn
 import argparse
-
+import numpy as np
 
 
 def load_model(path):
