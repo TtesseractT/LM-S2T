@@ -8,32 +8,7 @@ Original file is located at
 """
 
 
-from transformers import pipeline
-import torch
-path = "Validate"
-
-# transfer model
-
-pipe = pipeline(model=path, device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
-
-
-FE = pipe.feature_extractor()
-tokenizer = pipe.tokenizer()
-def transcribe(audio):
-    #text = pipe(audio)["text"]
-    #return text
-    out = pipe(audio)
-    out = tokenizer._tokenize(out["text"])
-    f = []
-    for o in out:
-      f.append(tokenizer._convert_token_to_id(o))
-    return np.asarray(f)
-
-import librosa as lr
-def LoadAudio(x):
-    x, sr = lr.load(x, sr=16000)
-    return x
-
+from utils import *
 import pandas as pd
 import numpy as np
 from tqdm import tqdm
@@ -75,10 +50,12 @@ for ip in outs:
 
 Y = np.asarray(Y)
 
-Pred = np.array([transcribe(x) for x in X])
-WPred = np.array([transcribe(White_noise(x)) for x in X])
-PPred = np.array([transcribe(Pink_noise(x)) for x in X])
-BPred = np.array([transcribe(Brown_noise(x)) for x in X])
+pipe, tokenizer = load_model("Validate")
+
+Pred = np.array([tokenizer._convert_token_to_id(transcribe(x, pipe)) for x in X])
+WPred = np.array([tokenizer._convert_token_to_id(transcribe(White_noise(x, pipe))) for x in X])
+PPred = np.array([tokenizer._convert_token_to_id(transcribe(Pink_noise(x, pipe))) for x in X])
+BPred = np.array([tokenizer._convert_token_to_id(transcribe(Brown_noise(x, pipe))) for x in X])
 
 def calculate_metrics(true_words, predicted_words):
     total_words = 0
